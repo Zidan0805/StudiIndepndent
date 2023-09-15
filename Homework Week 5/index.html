@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi dan List Pendaftar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Tab Menu -->
+    <div>
+        <button onclick="openTab('registrasi')">Registrasi</button>
+        <button onclick="openTab('listPendaftar')">List Pendaftar</button>
+    </div>
+
+    <!-- Tab Registrasi -->
+    <div id="registrasi" class="tab">
+        <h2>Form Registrasi</h2>
+        <form id="registrasiForm">
+            <label for="nama">Nama (minimal 10 karakter):</label>
+            <input type="text" id="nama" name="nama" minlength="10" required><br><br>
+            
+            <label for="umur">Umur (minimal 25 tahun):</label>
+            <input type="number" id="umur" name="umur" min="25" required><br><br>
+            
+            <label for="uangSangu">Uang Sangu (minimal 100 ribu dan maksimal 1 juta):</label>
+            <input type="number" id="uangSangu" name="uangSangu" min="100000" max="1000000" required><br><br>
+            
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <!-- Tab List Pendaftar -->
+    <div id="listPendaftar" class="tab">
+        <h2>List Pendaftar</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Umur</th>
+                    <th>Uang Sangu</th>
+                </tr>
+            </thead>
+            <tbody id="pendaftarTableBody">
+                <!-- Data pendaftar akan ditampilkan di sini -->
+            </tbody>
+        </table>
+        <p>Rata-rata pendaftar memiliki uang saku sebesar <span id="rataUangSangu"></span> dengan rata-rata umur <span id="rataUmur"></span></p>
+    </div>
+
+    <script>
+        // JavaScript untuk mengaktifkan tab
+        function openTab(tabName) {
+            var tabs = document.getElementsByClassName("tab");
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].style.display = "none";
+            }
+            document.getElementById(tabName).style.display = "block";
+        }
+
+        // JavaScript untuk menangani submit form
+        document.getElementById("registrasiForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            // Validasi form
+            var nama = document.getElementById("nama").value;
+            var umur = document.getElementById("umur").value;
+            var uangSangu = document.getElementById("uangSangu").value;
+
+            if (nama.length < 10 || umur < 25 || uangSangu < 100000 || uangSangu > 1000000) {
+                alert("Pastikan semua isian sesuai dengan kriteria.");
+                return;
+            }
+
+            // Menambahkan data pendaftar ke tabel
+            var table = document.getElementById("pendaftarTableBody");
+            var newRow = table.insertRow(-1);
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            cell1.innerHTML = nama;
+            cell2.innerHTML = umur;
+            cell3.innerHTML = uangSangu;
+
+            // Menghitung dan menampilkan rata-rata
+            var rows = table.getElementsByTagName("tr");
+            var totalUangSangu = 0;
+            var totalUmur = 0;
+            for (var i = 1; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                totalUangSangu += (cells[2].innerHTML);
+                totalUmur += (cells[1].innerHTML);
+            }
+            var rataUangSangu = totalUangSangu / (rows.length - 1);
+            var rataUmur = totalUmur / (rows.length - 1);
+            document.getElementById("rataUangSangu").textContent = rataUangSangu.toFixed(2);
+            document.getElementById("rataUmur").textContent = rataUmur.toFixed(2);
+
+            // Mengosongkan form
+            document.getElementById("nama").value = "";
+            document.getElementById("umur").value = "";
+            document.getElementById("uangSangu").value = "";
+        });
+
+        // Default: Tampilkan tab Registrasi saat pertama kali
+        openTab("registrasi");
+    </script>
+</body>
+</html>
